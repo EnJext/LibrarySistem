@@ -1,0 +1,43 @@
+﻿@model WebApplication3.Models.RegisterModel
+
+@{
+    ViewBag.Title = "Реєстрація";
+}
+
+
+    <div class="text-center">
+        @using (Html.BeginForm("Register", "User", FormMethod.Post))
+        {
+            <h2>Реєcтрація</h2>
+            @Html.AntiForgeryToken()
+
+            <span>@Html.ValidationSummary(true)</span>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+                <div>
+                    @Html.EditorFor(model => model.Name)
+                </div>
+                <span class="text-danger">@Html.ValidationMessageFor(model => model.Name)</span>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password, new { @class = "control-label col-md-2" })
+                <div>
+                    @Html.EditorFor(model => model.Password)
+                </div>
+                <span class="text-danger">@Html.ValidationMessageFor(model => model.Password)</span>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ConfirmPassword, new { @class = "control-label col-md-2" })
+                <div>
+                    @Html.EditorFor(model => model.ConfirmPassword)
+                </div>
+                <span class="text-danger">@Html.ValidationMessageFor(model => model.ConfirmPassword)</span>
+            </div>
+
+            <input type="submit" value="Зареєструватися" class="btn btn-success" />
+
+        }
+    </div>

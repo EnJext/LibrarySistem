@@ -1,0 +1,27 @@
+﻿@model WebApplication3.Models.Reservation
+
+
+<div class="row" style="margin-top:200px;">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-8 text-center">
+
+        <h3>@Model.Book.Name</h3>
+        <form action="Reservation" method="POST">
+            <div class="form-group row">
+                <label class="form-control col-md-7">Дата початку резервування книги :</label>
+                <div class="col-md-5">
+                    <input class="form-control" type="date" name="StartReservation" />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="form-control col-md-7">Дата кінця резервування книги :</label>
+                <div class="col-md-5">
+                    <input class="form-control" type="date" name="FinishReservation" />
+                </div>
+            </div>
+            <input type="hidden" name="BookId" value="@Model.Book.Id" />
+            <button type="submit" class="btn btn-info" style="margin-top:20px;"> Зарезервувати </button>
+        </form>
+    </div>
+</div>
