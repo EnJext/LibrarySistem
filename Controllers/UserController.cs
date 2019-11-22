@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using WebApplication3.Models;
 using WebApplication3.Filters;
+using System.Linq;
 
 namespace WebApplication3.Controllers
 {
@@ -73,6 +74,14 @@ namespace WebApplication3.Controllers
             FormsAuthentication.SignOut();
             return RedirectToAction("Index", "Home");
         }
+
+        [ChildActionOnly]
+        public PartialViewResult Menu() => PartialView(new UserMenuModel
+        {
+            CountOfReservedBooks = Repository.User?.Reservations?.Count(resv => resv.isValid),
+            IsAuthorized = Repository.IsAuthorized,
+            UserName = Repository.User?.Name
+        });
 
     }
 }

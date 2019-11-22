@@ -1,4 +1,4 @@
-﻿
+﻿@model WebApplication3.Models.UserMenuModel
 
 <nav class="navbar navbar-expand fixed-top navbar-light bg-light">
 
@@ -9,25 +9,25 @@
             </li>
         </ul>
 
-        @if (!Context.User.Identity.IsAuthenticated)
+        @if (Model.IsAuthorized)
+        {
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @Model.UserName
+                </button>
+                <div class="dropdown-menu dropdown-menu-right text-right">
+                    <a class="dropdown-item" href="@Url.Action("Index","Reservation")">Зарезервовані книги : @Model.CountOfReservedBooks</a>
+                    <a class="dropdown-item" href="@Url.Action("History", "Home")">Історія резервувань</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item text-danger" href="@Url.Action("Logoff", "User")">Вихід</a>
+                </div>
+            </div>
+        }
+        else
         {
             <span class="navbar-text">
                 <a class="btn btn-outline-success" href="@Url.Action("Login","User")">Вхід / Реєстрація</a>
             </span>
-        }
-        else if (Context.User.Identity.IsAuthenticated)
-        {
-            <div class="btn-group">
-                <button type="button" class="btn btn-outline-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    @Context.User.Identity.Name
-                </button>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="@Url.Action("Index","Reservation")">Зарезервовані книги</a>
-                    <a class="dropdown-item" href="@Url.Action("History", "Home")">Історія резервувань</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="@Url.Action("Logoff", "User")">Вихід</a>
-                </div>
-            </div>
         }
 
     </div>
