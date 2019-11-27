@@ -27,5 +27,7 @@ namespace WebApplication3.Controllers
             .Take(7);
             return View("Index", ResultBooks);
         }
+
+        public ViewResult Error(string message) => View("Error");
     }
 }

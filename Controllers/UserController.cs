@@ -31,9 +31,10 @@ namespace WebApplication3.Controllers
                 User user = Repository.Login(model.Name, model.Password);
 
                 if (user != null)
-                {
+                {           
                     FormsAuthentication.SetAuthCookie(model.Name, true);
                     logger.Info($"Користувач {Repository?.User?.Name}: Увійшов в систему");
+                    throw new System.Exception("am i a joke to YOU?");
                     return RedirectToAction("Index", "Home");
                 }
                 else

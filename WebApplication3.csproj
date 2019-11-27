@@ -130,6 +130,7 @@
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ReservationController.cs" />
+    <Compile Include="Filters\ExceptionHandlerFilter.cs" />
     <Compile Include="Filters\UserAuthenticationFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
