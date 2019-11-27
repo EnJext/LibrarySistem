@@ -3,11 +3,16 @@ using System.Web.Mvc;
 using WebApplication3.Models;
 using WebApplication3.Filters;
 using System.Linq;
+using NLog;
+
 
 namespace WebApplication3.Controllers
 {
     public class UserController : Controller
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
+
         private IUserRepository Repository;
 
         public UserController()
@@ -28,6 +33,7 @@ namespace WebApplication3.Controllers
                 if (user != null)
                 {
                     FormsAuthentication.SetAuthCookie(model.Name, true);
+                    logger.Info($"Користувач {Repository?.User?.Name}: Увійшов в систему");
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -56,6 +62,7 @@ namespace WebApplication3.Controllers
                 {
                     Repository.Login(user.Name, user.Password);
                     FormsAuthentication.SetAuthCookie(model.Name, true);
+                    logger.Info($"Користувач {Repository?.User?.Name}: Зареєструвався");
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -70,6 +77,7 @@ namespace WebApplication3.Controllers
         [UserAuthenticationFilter]
         public ActionResult Logoff()
         {
+            logger.Info($"Користувач {Repository?.User?.Name}: Вийшов з системи");
             Repository.Logout();
             FormsAuthentication.SignOut();
             return RedirectToAction("Index", "Home");

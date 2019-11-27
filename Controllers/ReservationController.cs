@@ -3,12 +3,15 @@ using System.Web.Mvc;
 using WebApplication3.Models;
 using System;
 using WebApplication3.Filters;
+using NLog;
 
 namespace WebApplication3.Controllers
 {
     [UserAuthenticationFilter]
     public class ReservationController : Controller
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         private IUserRepository Repository;
         public ReservationController() => Repository = StaticRepositories.UserRepository;
 
@@ -33,6 +36,9 @@ namespace WebApplication3.Controllers
                 &&reservation.Book != null)
             {
                 Repository.AddReservation(reservation);
+
+                logger.Info($"Користувач {Repository?.User?.Name}: Зарезервував книгу \"{reservation.Book.Name}\"");
+
                 TempData["ReservationMessage"] = $"\"{reservation.Book.Name}\" - зарезервовано";
             }
             else
@@ -46,7 +52,10 @@ namespace WebApplication3.Controllers
         [HttpPost]
         public ActionResult CancelReservation(int ReservationId)
         {
-            Repository.CancelReservation(ReservationId);
+            Reservation reservation = Repository.CancelReservation(ReservationId);
+
+            logger.Info($"Користувач {Repository?.User?.Name}: Відмінив резервування книги \"{reservation.Book.Name}\"");
+
             TempData["ReservationMessage"] = "Резервування відмінено";
 
             return RedirectToAction("Index");
