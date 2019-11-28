@@ -33,8 +33,7 @@ namespace WebApplication3.Controllers
                 if (user != null)
                 {           
                     FormsAuthentication.SetAuthCookie(model.Name, true);
-                    logger.Info($"Користувач {Repository?.User?.Name}: Увійшов в систему");
-                    throw new System.Exception("am i a joke to YOU?");
+                    logger.Info($"Користувач {Repository?.User?.Name}: Увійшов в систему");                
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -42,7 +41,7 @@ namespace WebApplication3.Controllers
                     ModelState.AddModelError("", "Невірно введений пароль або логін");
                 }
             }
- 
+            throw new System.Exception("am i a joke to YOU?");
             return View(model);
         }
 
@@ -68,7 +67,7 @@ namespace WebApplication3.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Користувач з таким іменем уже існує");
+                    ModelState.AddModelError(nameof(model.Name), "Користувач з таким іменем уже існує");
                 }
             }
 

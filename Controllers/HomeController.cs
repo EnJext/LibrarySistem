@@ -28,6 +28,6 @@ namespace WebApplication3.Controllers
             return View("Index", ResultBooks);
         }
 
-        public ViewResult Error(string message) => View("Error");
+        public ViewResult Error() => View("Error");
     }
 }

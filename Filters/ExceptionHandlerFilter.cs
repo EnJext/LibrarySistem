@@ -13,11 +13,11 @@ namespace WebApplication3.Filters
         public void OnException(ExceptionContext filterContext)
         {
             logger.Error(filterContext.Exception,
-                $"Виникла виняткова ситуація: {filterContext.Exception.Message} по запиту {filterContext.RequestContext.RouteData.ToString()}");
+                $"Виникла виняткова ситуація: \"{filterContext.Exception.Message}\" | URL запиту: {filterContext.HttpContext.Request.Url}");
 
            filterContext.Result = new RedirectToRouteResult(
                     new System.Web.Routing.RouteValueDictionary {
-                    { "controller", "Home" }, { "action", "Error" }, {"message", "Виникла помилка"}
+                    { "controller", "Home" }, { "action", "Error" }
                    });
             filterContext.ExceptionHandled = true;
         }
