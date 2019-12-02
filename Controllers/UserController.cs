@@ -41,7 +41,7 @@ namespace WebApplication3.Controllers
                     ModelState.AddModelError("", "Невірно введений пароль або логін");
                 }
             }
-            throw new System.Exception("am i a joke to YOU?");
+            //throw new System.Exception("am i a joke to YOU?");
             return View(model);
         }
 
