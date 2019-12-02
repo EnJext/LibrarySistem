@@ -11,7 +11,7 @@
         {
             @Html.AntiForgeryToken()
 
-            <span class="text-danger">@Html.ValidationSummary()</span>
+            <span class="text-danger">@Html.ValidationSummary(true)</span>
 
             <div class="form-group">
                 @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })

@@ -9,7 +9,7 @@
     <title>@ViewBag.Title</title>
 </head>
 <body>
-    @Html.Partial("Menu");
+    @Html.Action("Menu", "User");
     <div style="margin-top:80px">
         @RenderBody();
     </div>

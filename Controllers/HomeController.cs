@@ -17,7 +17,6 @@ namespace WebApplication3.Controllers
         [UserAuthenticationFilter]
         public ViewResult History() => View(Repository.User.Reservations.Where(r => !r.isValid));
 
-        [HttpPost]
         public ActionResult Search(SearchModel model)
         {
             IEnumerable<Book> ResultBooks = Repository.Books
@@ -28,5 +27,7 @@ namespace WebApplication3.Controllers
             .Take(7);
             return View("Index", ResultBooks);
         }
+
+        public ViewResult Error() => View("Error");
     }
 }
