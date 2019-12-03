@@ -12,7 +12,7 @@ namespace WebApplication3.Controllers
         private IUserRepository Repository;
         public HomeController()=>Repository = StaticRepositories.UserRepository;
 
-        public ViewResult Index() => View(Repository.Books.Take(7));
+        public ViewResult Index()=>View(Repository.Books.Take(7));
 
         [UserAuthenticationFilter]
         public ViewResult History() => View(Repository.User.Reservations.Where(r => !r.isValid));
@@ -22,7 +22,7 @@ namespace WebApplication3.Controllers
             IEnumerable<Book> ResultBooks = Repository.Books
             .Where(b => (model.Name == null) ? true : (b.Name == model.Name))
             .Where(b => (model.Author == null) ? true : (b.Author == model.Author))
-            .Where(b => (model.Genre == null) ? true : (b.Genres.Contains(model.Genre)))
+            .Where(b => (model.Genre == null) ? true : (b.Genres.Any(genre=>genre.Name == model.Genre)))
             .Where(b => ((b.Date.Date >= model.FromDate) && (model.UntilDate.Date == DateTime.MinValue.Date ? true : b.Date.Date <= model.UntilDate.Date)))
             .Take(7);
             return View("Index", ResultBooks);

@@ -473,3 +473,5 @@ ASALocalRun/
 
 **/Content/lib/
 **/App_Data/
+*.mdf
+*.ldf

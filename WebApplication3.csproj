@@ -45,6 +45,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>packages\NLog.4.6.8\lib\net45\NLog.dll</HintPath>
@@ -135,6 +141,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201912031703302_initialMigration.cs" />
+    <Compile Include="Migrations\201912031703302_initialMigration.Designer.cs">
+      <DependentUpon>201912031703302_initialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\AppContext.cs" />
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\IUserRepository.cs" />
     <Compile Include="Models\JsonContext.cs" />
@@ -147,6 +159,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Library.mdf" />
+    <Content Include="App_Data\Library_log.ldf">
+      <DependentUpon>Library.mdf</DependentUpon>
+    </Content>
     <Content Include="App_Data\Log.txt" />
     <Content Include="Content\lib\bootstrap\dist\css\bootstrap-grid.css" />
     <Content Include="Content\lib\bootstrap\dist\css\bootstrap-grid.min.css" />
@@ -469,7 +485,11 @@
     <Content Include="Views\User\Login.cshtml" />
     <Content Include="Views\Shared\Menu.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201912031703302_initialMigration.resx">
+      <DependentUpon>201912031703302_initialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

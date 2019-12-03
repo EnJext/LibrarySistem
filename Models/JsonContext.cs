@@ -6,7 +6,7 @@ using System.IO;
 
 namespace WebApplication3.Models
 {
-    public class JsonContext
+    public class jsonContext
     {
         [JsonIgnore]
         private JsonSerializer serializer;
@@ -14,8 +14,8 @@ namespace WebApplication3.Models
         [JsonIgnore]
         private string StorageName;
 
-        public JsonContext() { }
-        public JsonContext(string JsonFileName)
+        public jsonContext() { }
+        public jsonContext(string JsonFileName)
         {
             StorageName = JsonFileName;
             serializer = new JsonSerializer();
@@ -23,11 +23,12 @@ namespace WebApplication3.Models
             using (StreamReader sr = new StreamReader(StorageName))
             using (JsonReader reader = new JsonTextReader(sr))
             {
-                JsonContext tempRepository = serializer.Deserialize<JsonContext>(reader);
+                jsonContext tempRepository = serializer.Deserialize<jsonContext>(reader);
 
                 this.Books = tempRepository.Books ?? new List<Book>();
                 this.Reservations = tempRepository.Reservations ?? new List<Reservation>();
                 this.Users = tempRepository.Users ?? new List<User>();
+                this.Genres = tempRepository.Genres ?? new List<Genre>();
             }
         }
 
@@ -43,6 +44,7 @@ namespace WebApplication3.Models
         public List<Book> Books { get; set;}
         public List<Reservation> Reservations { get; set;}
         public List<User> Users { get; set;}
+        public List<Genre> Genres { get; set; }
 
     }
 }

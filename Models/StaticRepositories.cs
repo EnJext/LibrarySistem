@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
 
 namespace WebApplication3.Models
 {
@@ -9,50 +10,40 @@ namespace WebApplication3.Models
         public static IUserRepository UserRepository { get;}
         static StaticRepositories()
         {
-            UserRepository = new UserRepository(AppDomain.CurrentDomain.BaseDirectory + "App_Data/JsonStorage.json");
+            UserRepository = new UserRepository();
         }
     }
 
-
     public class UserRepository : IUserRepository
     {
-        private JsonContext jsonContext;
+        private AppContext context;
         public User User { get; set; }
         public bool IsAuthorized => User != null;
 
-        public UserRepository(string JsonFileName)
+        public UserRepository()
         {
-            jsonContext = new JsonContext(JsonFileName);
+            context = new AppContext();
         }
-        public IEnumerable<Book> Books => jsonContext.Books;
+        public IEnumerable<Book> Books => context.Books.Include(book=>book.Genres);
         public void Logout() => User = null;
         public User Login(string Name, string password)
         {
-            User = jsonContext.Users.FirstOrDefault(u => u.Name == Name && u.Password == password);
+            User = context.Users.FirstOrDefault(u => u.Name == Name && u.Password == password);
 
             if(User != null)
             {
-                User.Reservations = jsonContext.Reservations.Where(resv => resv.UserId == User.Id).ToList();
-                User.Reservations.ForEach(resv => resv.Book = Books.FirstOrDefault(b => b.Id == resv.BookId)); 
+                context.Entry(User).Collection(s => s.Reservations).Load();
             }
             return User;
         }
 
         public User Register(string Name, string Password)
         {
-           if (!jsonContext.Users.Any(usr=>usr.Name==Name))
+           if (!context.Users.Any(usr=>usr.Name==Name))
             {
-                int newId = jsonContext.Users.Count() + 1;
-                while (jsonContext.Users.Any(usr => usr.Id == newId)) newId++;
-                User user = new User
-                {
-                    Id = newId,
-                    Name = Name,
-                    Password = Password
-                };
-
-                jsonContext.Users.Add(user);
-                jsonContext.SaveChanges();
+                User user = new User { Name = Name, Password = Password };
+                context.Users.Add(user);
+                context.SaveChanges();
                 return user;
             }
             return null;
@@ -62,28 +53,32 @@ namespace WebApplication3.Models
         {
             if(reservation.Id == 0)
             {
-                int newId = jsonContext.Reservations.Count()+1;
-                while (jsonContext.Reservations.Any(resv => resv.Id == newId)) newId++;
-                reservation.Id = newId;
-                reservation.UserId = User.Id;
+                Reservation updateReservarion  = context.Reservations.FirstOrDefault(res=> res.BookId == reservation.BookId);
 
-                jsonContext.Reservations.Add(reservation);
-                User.Reservations.Add(reservation);
-
-                jsonContext.SaveChanges();
+                if (updateReservarion != null)
+                {
+                    updateReservarion.FinishReservation = reservation.FinishReservation;
+                    updateReservarion.StartReservation = reservation.StartReservation;
+                }
+                else {
+                    reservation.UserId = User.Id;
+                    context.Reservations.Add(reservation);
+                    User.Reservations.Add(reservation);
+                }
+                context.SaveChanges();
             }
         }
 
         public Reservation CancelReservation(int ReservationId)
         {
             Reservation toCancel =
-                jsonContext.Reservations.FirstOrDefault(resv => resv.Id == ReservationId);
+                context.Reservations.FirstOrDefault(resv => resv.Id == ReservationId);
 
             if(toCancel != null)
             {
                 toCancel.FinishReservation = DateTime.Now;
+                context.SaveChanges();
             }
-
             return toCancel;
         }
     }
