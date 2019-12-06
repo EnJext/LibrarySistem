@@ -13,12 +13,9 @@ namespace WebApplication3.Controllers
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
 
-        private IUserRepository Repository;
+        private IUserRepository userRepository;
 
-        public UserController(IUserRepository repository)
-        {
-            Repository = repository;
-        }
+        public UserController(IUserRepository repository) => userRepository = repository;
 
         public ViewResult Login() => View();
 
@@ -28,12 +25,12 @@ namespace WebApplication3.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = Repository.Login(model.Name, model.Password);
+                User user = userRepository.Login(model.Name, model.Password);
 
                 if (user != null)
                 {           
                     FormsAuthentication.SetAuthCookie(model.Name, true);
-                    logger.Info($"Користувач {Repository.GetAuthorizedUser(User)?.Name}: Увійшов в систему");                
+                    logger.Info($"Користувач {userRepository.GetAuthorizedUser(User)?.Name}: Увійшов в систему");                
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -55,13 +52,13 @@ namespace WebApplication3.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = Repository.Register(model.Name, model.Password);
+                User user = userRepository.Register(model.Name, model.Password);
 
                 if (user != null)
                 {
-                    Repository.Login(user.Name, user.Password);
+                    userRepository.Login(user.Name, user.Password);
                     FormsAuthentication.SetAuthCookie(model.Name, true);
-                    logger.Info($"Користувач {Repository.GetAuthorizedUser(User)?.Name}: Зареєструвався");
+                    logger.Info($"Користувач {userRepository.GetAuthorizedUser(User)?.Name}: Зареєструвався");
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -76,8 +73,8 @@ namespace WebApplication3.Controllers
         [UserAuthenticationFilter]
         public ActionResult Logoff()
         {
-            logger.Info($"Користувач {Repository.GetAuthorizedUser(User)?.Name}: Вийшов з системи");
-            Repository.Logout();
+            logger.Info($"Користувач {userRepository.GetAuthorizedUser(User)?.Name}: Вийшов з системи");
+            userRepository.Logout();
             FormsAuthentication.SignOut();
             return RedirectToAction("Index", "Home");
         }
@@ -85,9 +82,9 @@ namespace WebApplication3.Controllers
         [ChildActionOnly]
         public PartialViewResult Menu() => PartialView(new UserMenuModel
         {
-            CountOfReservedBooks = Repository.GetAuthorizedUser(User)?.Reservations?.Count(resv => resv.isValid),
-            IsAuthorized = Repository.IsAuthorized,
-            UserName = Repository.GetAuthorizedUser(User)?.Name
+            CountOfReservedBooks = userRepository.GetAuthorizedUser(User)?.Reservations?.Count(resv => resv.isValid),
+            IsAuthorized = userRepository.IsAuthorized,
+            UserName = userRepository.GetAuthorizedUser(User)?.Name
         });
 
     }

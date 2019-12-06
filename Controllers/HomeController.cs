@@ -9,17 +9,17 @@ namespace WebApplication3.Controllers
 {
     public class HomeController : Controller
     {
-        private IUserRepository Repository;
-        public HomeController(IUserRepository repository)=>Repository = repository;
+        private IUserRepository userRepository;
+        public HomeController(IUserRepository repository)=>userRepository = repository;
+        public ViewResult Index()=>View(userRepository.Books.Take(7));
 
-        public ViewResult Index()=>View(Repository.Books.Take(7));
 
         [UserAuthenticationFilter]
-        public ViewResult History() => View(Repository.GetAuthorizedUser(User).Reservations.Where(r => !r.isValid));
+        public ViewResult History() => View(userRepository.GetAuthorizedUser(User).Reservations.Where(r => !r.isValid));
 
         public ActionResult Search(SearchModel model)
         {
-            IEnumerable<Book> ResultBooks = Repository.Books
+            IEnumerable<Book> ResultBooks = userRepository.Books
             .Where(b => (model.Name == null) ? true : (b.Name == model.Name))
             .Where(b => (model.Author == null) ? true : (b.Author == model.Author))
             .Where(b => (model.Genre == null) ? true : (b.Genres.Any(genre=>genre.Name == model.Genre)))

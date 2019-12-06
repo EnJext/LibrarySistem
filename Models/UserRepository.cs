@@ -7,15 +7,6 @@ using System.Security.Principal;
 
 namespace WebApplication3.Models
 {
-    public static class StaticRepositories
-    {
-        public static IUserRepository UserRepository { get;}
-        static StaticRepositories()
-        {
-            UserRepository = new UserRepository(new AppContext());
-        }
-    }
-
     public class UserRepository : IUserRepository
     {
         private AppContext context;

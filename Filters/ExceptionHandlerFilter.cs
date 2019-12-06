@@ -1,6 +1,4 @@
 ﻿using System.Web.Mvc;
-using System.Web.Mvc.Filters;
-using WebApplication3.Models;
 using NLog;
 
 namespace WebApplication3.Filters

@@ -12,14 +12,14 @@ namespace WebApplication3.Controllers
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        private IUserRepository Repository;
-        public ReservationController(IUserRepository repository) => Repository = repository;
+        private IUserRepository userRepository;
+        public ReservationController(IUserRepository repository) => userRepository = repository;
 
-        public ViewResult Index() => View(Repository.GetAuthorizedUser(User).Reservations.Where(r=>r.isValid));
+        public ViewResult Index() => View(userRepository.GetAuthorizedUser(User).Reservations.Where(r=>r.isValid));
 
         public ActionResult Reservation(int? BookId)
         {
-            Book book = Repository.Books.FirstOrDefault(b => b.Id == BookId);
+            Book book = userRepository.Books.FirstOrDefault(b => b.Id == BookId);
             if (book != null)
             {
                 return View(new Reservation { Book = book});
@@ -30,14 +30,14 @@ namespace WebApplication3.Controllers
         [HttpPost] 
         public ActionResult Reservation(Reservation reservation)
         {
-            reservation.Book = Repository.Books.FirstOrDefault(b => b.Id == reservation.BookId);
+            reservation.Book = userRepository.Books.FirstOrDefault(b => b.Id == reservation.BookId);
 
             if (reservation.StartReservation >= DateTime.Now.Date && reservation.isValid
                 &&reservation.Book != null)
             {
-                Repository.AddReservation(reservation);
+                userRepository.AddReservation(reservation);
 
-                logger.Info($"Користувач {Repository.GetAuthorizedUser(User)?.Name}: Зарезервував книгу \"{reservation.Book.Name}\"");
+                logger.Info($"Користувач {userRepository.GetAuthorizedUser(User)?.Name}: Зарезервував книгу \"{reservation.Book.Name}\"");
 
                 TempData["ReservationMessage"] = $"\"{reservation.Book.Name}\" - зарезервовано";
             }
@@ -52,11 +52,13 @@ namespace WebApplication3.Controllers
         [HttpPost]
         public ActionResult CancelReservation(int ReservationId)
         {
-            Reservation reservation = Repository.CancelReservation(ReservationId);
+            Reservation reservation = userRepository.CancelReservation(ReservationId);
 
-            logger.Info($"Користувач {Repository.GetAuthorizedUser(User)?.Name}: Відмінив резервування книги \"{reservation.Book.Name}\"");
-
-            TempData["ReservationMessage"] = "Резервування відмінено";
+            if(reservation != null)
+            {
+                logger.Info($"Користувач {userRepository.GetAuthorizedUser(User)?.Name}: Відмінив резервування книги \"{reservation.Book.Name}\"");
+                TempData["ReservationMessage"] = "Резервування відмінено";
+            }
 
             return RedirectToAction("Index");
         }

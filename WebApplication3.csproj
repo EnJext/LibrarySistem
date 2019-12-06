@@ -161,12 +161,11 @@
     <Compile Include="Models\AppContext.cs" />
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\IUserRepository.cs" />
-    <Compile Include="Models\JsonContext.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\UserMenuModel.cs" />
     <Compile Include="Models\Reservation.cs" />
     <Compile Include="Models\SearchModel.cs" />
-    <Compile Include="Models\StaticRepositories.cs" />
+    <Compile Include="Models\UserRepository.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\NinjectRegistrations.cs" />
