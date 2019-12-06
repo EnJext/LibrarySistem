@@ -15,8 +15,7 @@ namespace WebApplication3.Models
         public DbSet<Genre> Genres { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            
+        {         
             base.OnModelCreating(modelBuilder);
         }
     }

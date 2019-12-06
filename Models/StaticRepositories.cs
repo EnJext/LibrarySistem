@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Ninject;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Data.Entity;
+using System.Linq;
+using System.Security.Principal;
 
 namespace WebApplication3.Models
 {
@@ -10,30 +12,23 @@ namespace WebApplication3.Models
         public static IUserRepository UserRepository { get;}
         static StaticRepositories()
         {
-            UserRepository = new UserRepository();
+            UserRepository = new UserRepository(new AppContext());
         }
     }
 
     public class UserRepository : IUserRepository
     {
         private AppContext context;
-        public User User { get; set; }
+        private User User;
         public bool IsAuthorized => User != null;
 
-        public UserRepository()
-        {
-            context = new AppContext();
-        }
-        public IEnumerable<Book> Books => context.Books.Include(book=>book.Genres);
-        public void Logout() => User = null;
+        public UserRepository() => context = new StandardKernel().Get<AppContext>();
+        public UserRepository(AppContext context)=>this.context = context;
+        public IEnumerable<Book> Books => context.Books.Include(book=>book.Genres);//перенести в другой репозиторий 
+        public void Logout() => User = null; //удалить
         public User Login(string Name, string password)
         {
             User = context.Users.FirstOrDefault(u => u.Name == Name && u.Password == password);
-
-            if(User != null)
-            {
-                context.Entry(User).Collection(s => s.Reservations).Load();
-            }
             return User;
         }
 
@@ -53,7 +48,7 @@ namespace WebApplication3.Models
         {
             if(reservation.Id == 0)
             {
-                Reservation updateReservarion  = context.Reservations.FirstOrDefault(res=> res.BookId == reservation.BookId);
+                Reservation updateReservarion  = User?.Reservations?.FirstOrDefault(res=> res.BookId == reservation.BookId);
 
                 if (updateReservarion != null)
                 {
@@ -63,7 +58,6 @@ namespace WebApplication3.Models
                 else {
                     reservation.UserId = User.Id;
                     context.Reservations.Add(reservation);
-                    User.Reservations.Add(reservation);
                 }
                 context.SaveChanges();
             }
@@ -71,8 +65,8 @@ namespace WebApplication3.Models
 
         public Reservation CancelReservation(int ReservationId)
         {
-            Reservation toCancel =
-                context.Reservations.FirstOrDefault(resv => resv.Id == ReservationId);
+            Reservation toCancel = 
+                User?.Reservations?.FirstOrDefault(resv => resv.Id == ReservationId);
 
             if(toCancel != null)
             {
@@ -80,6 +74,12 @@ namespace WebApplication3.Models
                 context.SaveChanges();
             }
             return toCancel;
+        }
+        public User GetAuthorizedUser(IPrincipal user)
+        {
+            User = context.Users.FirstOrDefault(u => u.Name == user.Identity.Name);
+            if(IsAuthorized)context.Entry(User).Collection(s => s.Reservations).Load();
+            return User;
         }
     }
 }

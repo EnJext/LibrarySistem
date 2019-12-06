@@ -61,6 +61,7 @@
                     <p>@book.Author</p>
                     <p>@book.Date.Date.ToShortDateString()</p>
                     <p>
+                        Жанр :
                         @foreach (var genre in book.Genres)
                         {
                             @(genre + ",   ")

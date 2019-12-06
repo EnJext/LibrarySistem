@@ -15,9 +15,9 @@ namespace WebApplication3.Controllers
 
         private IUserRepository Repository;
 
-        public UserController()
+        public UserController(IUserRepository repository)
         {
-            Repository = StaticRepositories.UserRepository;
+            Repository = repository;
         }
 
         public ViewResult Login() => View();
@@ -33,7 +33,7 @@ namespace WebApplication3.Controllers
                 if (user != null)
                 {           
                     FormsAuthentication.SetAuthCookie(model.Name, true);
-                    logger.Info($"Користувач {Repository?.User?.Name}: Увійшов в систему");                
+                    logger.Info($"Користувач {Repository.GetAuthorizedUser(User)?.Name}: Увійшов в систему");                
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -41,7 +41,6 @@ namespace WebApplication3.Controllers
                     ModelState.AddModelError("", "Невірно введений пароль або логін");
                 }
             }
-            //throw new System.Exception("am i a joke to YOU?");
             return View(model);
         }
 
@@ -62,7 +61,7 @@ namespace WebApplication3.Controllers
                 {
                     Repository.Login(user.Name, user.Password);
                     FormsAuthentication.SetAuthCookie(model.Name, true);
-                    logger.Info($"Користувач {Repository?.User?.Name}: Зареєструвався");
+                    logger.Info($"Користувач {Repository.GetAuthorizedUser(User)?.Name}: Зареєструвався");
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -77,7 +76,7 @@ namespace WebApplication3.Controllers
         [UserAuthenticationFilter]
         public ActionResult Logoff()
         {
-            logger.Info($"Користувач {Repository?.User?.Name}: Вийшов з системи");
+            logger.Info($"Користувач {Repository.GetAuthorizedUser(User)?.Name}: Вийшов з системи");
             Repository.Logout();
             FormsAuthentication.SignOut();
             return RedirectToAction("Index", "Home");
@@ -86,9 +85,9 @@ namespace WebApplication3.Controllers
         [ChildActionOnly]
         public PartialViewResult Menu() => PartialView(new UserMenuModel
         {
-            CountOfReservedBooks = Repository.User?.Reservations?.Count(resv => resv.isValid),
+            CountOfReservedBooks = Repository.GetAuthorizedUser(User)?.Reservations?.Count(resv => resv.isValid),
             IsAuthorized = Repository.IsAuthorized,
-            UserName = Repository.User?.Name
+            UserName = Repository.GetAuthorizedUser(User)?.Name
         });
 
     }

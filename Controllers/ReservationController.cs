@@ -13,9 +13,9 @@ namespace WebApplication3.Controllers
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         private IUserRepository Repository;
-        public ReservationController() => Repository = StaticRepositories.UserRepository;
+        public ReservationController(IUserRepository repository) => Repository = repository;
 
-        public ViewResult Index() => View(Repository.User.Reservations.Where(r=>r.isValid));
+        public ViewResult Index() => View(Repository.GetAuthorizedUser(User).Reservations.Where(r=>r.isValid));
 
         public ActionResult Reservation(int? BookId)
         {
@@ -37,7 +37,7 @@ namespace WebApplication3.Controllers
             {
                 Repository.AddReservation(reservation);
 
-                logger.Info($"Користувач {Repository?.User?.Name}: Зарезервував книгу \"{reservation.Book.Name}\"");
+                logger.Info($"Користувач {Repository.GetAuthorizedUser(User)?.Name}: Зарезервував книгу \"{reservation.Book.Name}\"");
 
                 TempData["ReservationMessage"] = $"\"{reservation.Book.Name}\" - зарезервовано";
             }
@@ -54,7 +54,7 @@ namespace WebApplication3.Controllers
         {
             Reservation reservation = Repository.CancelReservation(ReservationId);
 
-            logger.Info($"Користувач {Repository?.User?.Name}: Відмінив резервування книги \"{reservation.Book.Name}\"");
+            logger.Info($"Користувач {Repository.GetAuthorizedUser(User)?.Name}: Відмінив резервування книги \"{reservation.Book.Name}\"");
 
             TempData["ReservationMessage"] = "Резервування відмінено";
 

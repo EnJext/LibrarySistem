@@ -10,12 +10,12 @@ namespace WebApplication3.Controllers
     public class HomeController : Controller
     {
         private IUserRepository Repository;
-        public HomeController()=>Repository = StaticRepositories.UserRepository;
+        public HomeController(IUserRepository repository)=>Repository = repository;
 
         public ViewResult Index()=>View(Repository.Books.Take(7));
 
         [UserAuthenticationFilter]
-        public ViewResult History() => View(Repository.User.Reservations.Where(r => !r.isValid));
+        public ViewResult History() => View(Repository.GetAuthorizedUser(User).Reservations.Where(r => !r.isValid));
 
         public ActionResult Search(SearchModel model)
         {
