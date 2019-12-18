@@ -4,26 +4,39 @@ namespace WebApplication3.Models
 {
     public class LoginModel
     {
-        [Required(ErrorMessage = "Полe \"Name\" є обов'язковим")]
+        
+
+        [Required(ErrorMessageResourceType = typeof(Resources.Resource),
+            ErrorMessageResourceName = "NameRequired")]
+        [Display(Name="Name", ResourceType =typeof(Resources.Resource))]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "Полe \"Password\" є обов'язковим")]
+
+        [Required(ErrorMessageResourceType= typeof(Resources.Resource),
+            ErrorMessageResourceName ="PasswordRequired")]
         [DataType(DataType.Password)]
+        [Display(Name="Password", ResourceType = typeof(Resources.Resource))]
         public string Password { get; set; }
     }
 
     public class RegisterModel
     {
-        [Required(ErrorMessage = "Полe \"Name\" є обов'язковим")]
+
+        [Required(ErrorMessageResourceType = typeof(Resources.Resource),
+            ErrorMessageResourceName = "NameRequired")]
+        [Display(Name = "Name", ResourceType = typeof(Resources.Resource))]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "Полe \"Password\" є обов'язковим")]
+        [Required(ErrorMessageResourceType = typeof(Resources.Resource), 
+            ErrorMessageResourceName = "PasswordRequired")]
         [DataType(DataType.Password)]
+        [Display(Name = "Password", ResourceType = typeof(Resources.Resource))]
         public string Password { get; set; }
 
-        [Required(ErrorMessage = "Полe \"ConfirmPassword\" є обов'язковим")]
+        [Required(ErrorMessageResourceType = typeof(Resources.Resource), ErrorMessageResourceName ="ConfirmPasswordRequired")]
         [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "Паролі не співпадають")]
+        [Compare("Password", ErrorMessageResourceType = typeof(Resources.Resource), ErrorMessageResourceName = "PasswordNotCoincided")]
+        [Display(Name="ConfirmPassword", ResourceType = typeof(Resources.Resource))]
         public string ConfirmPassword { get; set; }
 
     }

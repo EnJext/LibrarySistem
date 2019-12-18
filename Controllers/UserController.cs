@@ -8,6 +8,7 @@ using NLog;
 
 namespace WebApplication3.Controllers
 {
+    [Culture]
     public class UserController : Controller
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -41,7 +42,6 @@ namespace WebApplication3.Controllers
                     ModelState.AddModelError("", "Невірно введений пароль або логін");
                 }
             }
-            //throw new System.Exception("am i a joke to YOU?");
             return View(model);
         }
 
@@ -88,7 +88,8 @@ namespace WebApplication3.Controllers
         {
             CountOfReservedBooks = Repository.User?.Reservations?.Count(resv => resv.isValid),
             IsAuthorized = Repository.IsAuthorized,
-            UserName = Repository.User?.Name
+            UserName = Repository.User?.Name,
+            LangToChange = Request.Cookies["lang"]?.Value == "uk"?"en":"uk"
         });
 
     }

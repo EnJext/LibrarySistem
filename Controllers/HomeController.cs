@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using WebApplication3.Models;
 using WebApplication3.Filters;
 using System.Collections.Generic;
+using System.Web;
 using System;
 
 namespace WebApplication3.Controllers
@@ -26,6 +27,30 @@ namespace WebApplication3.Controllers
             .Where(b => ((b.Date.Date >= model.FromDate) && (model.UntilDate.Date == DateTime.MinValue.Date ? true : b.Date.Date <= model.UntilDate.Date)))
             .Take(7);
             return View("Index", ResultBooks);
+        }
+
+        public ActionResult ChangeCulture(string lang, string returnUrl=null)
+        {
+            List<string> cultures = new List<string> { "uk", "en" };
+
+            if(!cultures.Contains(lang))
+            {
+                lang = "uk";
+            }
+
+            HttpCookie cookie = Request.Cookies["lang"];
+            if (cookie != null)
+                cookie.Value = lang;   
+            else
+            {
+
+                cookie = new HttpCookie("lang");
+                cookie.HttpOnly = false;
+                cookie.Value = lang;
+                cookie.Expires = DateTime.Now.AddYears(1);
+            }
+            Response.Cookies.Add(cookie);
+            return Redirect(returnUrl);
         }
 
         public ViewResult Error() => View("Error");

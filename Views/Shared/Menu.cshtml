@@ -5,9 +5,14 @@
     <div class="collapse navbar-collapse" id="navbarText">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="navbar-brand" href="@Url.Action("Index", "Home")">Книги</a>
+                <a class="navbar-brand" href="@Url.Action("Index", "Home")">@Resources.Resource.Main</a>
             </li>
         </ul>
+
+        <a class="btn btn-outline-success" 
+           href="@Url.Action("ChangeCulture","Home",new { lang=Model.LangToChange, returnUrl = Request.RawUrl})"
+           style="margin-right:20px;">
+        @Model.LangToChange</a>
 
         @if (Model.IsAuthorized)
         {
@@ -16,17 +21,17 @@
                     @Model.UserName
                 </button>
                 <div class="dropdown-menu dropdown-menu-right text-right">
-                    <a class="dropdown-item" href="@Url.Action("Index","Reservation")">Зарезервовані книги : @Model.CountOfReservedBooks</a>
-                    <a class="dropdown-item" href="@Url.Action("History", "Home")">Історія резервувань</a>
+                    <a class="dropdown-item" href="@Url.Action("Index","Reservation")">@Resources.Resource.ReservationList : @Model.CountOfReservedBooks</a>
+                    <a class="dropdown-item" href="@Url.Action("History", "Home")">@Resources.Resource.HistoryList</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item text-danger" href="@Url.Action("Logoff", "User")">Вихід</a>
+                    <a class="dropdown-item text-danger" href="@Url.Action("Logoff", "User")">@Resources.Resource.LogOut</a>
                 </div>
             </div>
         }
         else
         {
             <span class="navbar-text">
-                <a class="btn btn-outline-success" href="@Url.Action("Login","User")">Вхід / Реєстрація</a>
+                <a class="btn btn-outline-success" href="@Url.Action("Login","User")">@Resources.Resource.LogIn / @Resources.Resource.SignUp</a>
             </span>
         }
 
